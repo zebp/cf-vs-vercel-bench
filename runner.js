@@ -14,7 +14,13 @@ const tests = [
     cfUrl: "https://cf-sveltekit-bench.davis-benjamin41902.workers.dev",
     vercelUrl: "https://vercel-svelte-bench.vercel.app",
   },
+  {
+    name: "react-ssr-bench",
+    cfUrl: "https://react-ssr-cf.pinglabs.workers.dev/bench",
+    vercelUrl: "https://react-ssr-bench-v2.vercel.app/api/bench",
+  },
 ];
+
 const fs = require("fs");
 const path = require("path");
 
