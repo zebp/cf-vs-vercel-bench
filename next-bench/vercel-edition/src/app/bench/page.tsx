@@ -1,13 +1,9 @@
-"use server";
-
 import ComplexComponent from "./complex-component";
-import { headers } from "next/headers";
 
-// export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 export default async function ComplexPage() {
   console.log("rendering", Date.now());
-  headers();
 
   const currentTime = new Date().toLocaleString();
   return (
