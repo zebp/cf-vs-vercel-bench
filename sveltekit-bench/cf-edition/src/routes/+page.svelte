@@ -1,16 +1,7 @@
 <script lang="ts">
-	import { getComplexData } from '$lib/complex';
+	const { data: initialData } = $props();
 
-	const { data, totalPrimes, averageFib } = getComplexData();
-
-	const computations = Array.from({ length: 300 }, (_, i) => {
-		const n = i + 1;
-		const factorial = Array.from({ length: Math.min(n, 20) }, (_, j) => j + 1).reduce(
-			(acc, val) => acc * val,
-			1
-		);
-		return { n, factorial };
-	});
+	const { totalPrimes, averageFib, computations, data } = initialData;
 </script>
 
 <div

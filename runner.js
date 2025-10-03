@@ -1,14 +1,14 @@
 const tests = [
-  {
-    name: "next-js",
-    vercelUrl: "https://vercel-ssr-bench-v2-hidden.vercel.app/bench",
-    cfUrl: "https://my-next-app.pinglabs.workers.dev/bench",
-  },
-  {
-    name: "vanilla-slower",
-    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/slower-bench",
-    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
-  },
+  // {
+  //   name: "next-js",
+  //   vercelUrl: "https://vercel-ssr-bench-v2-hidden.vercel.app/bench",
+  //   cfUrl: "https://my-next-app.pinglabs.workers.dev/bench",
+  // },
+  // {
+  //   name: "vanilla-slower",
+  //   cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/slower-bench",
+  //   vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
+  // },
   {
     name: "sveltekit",
     cfUrl: "https://cf-sveltekit-bench.davis-benjamin41902.workers.dev",
