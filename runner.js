@@ -1,5 +1,15 @@
-const VERCEL_URL = "https://vercel-ssr-bench-v2.vercel.app/bench";
-const CF_URL = "https://my-next-app.pinglabs.workers.dev/bench";
+const tests = [
+  {
+    name: "next-js",
+    vercelUrl: "https://vercel-ssr-bench-v2-hidden.vercel.app/bench",
+    cfUrl: "https://my-next-app.pinglabs.workers.dev/bench",
+  },
+  {
+    name: "vanilla-slower",
+    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/slower-bench",
+    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
+  },
+];
 const fs = require("fs");
 const path = require("path");
 
@@ -71,48 +81,70 @@ async function main() {
   console.log("  SSR Performance Benchmark: Cloudflare vs Vercel");
   console.log("=".repeat(60));
 
-  const cfResults = await runBenchmark(CF_URL, "Cloudflare");
-  const vercelResults = await runBenchmark(VERCEL_URL, "Vercel");
+  const allResults = [];
 
-  console.log("=".repeat(60));
-  console.log("  RESULTS");
-  console.log("=".repeat(60));
+  for (const test of tests) {
+    console.log("\n" + "-".repeat(60));
+    console.log(`Test: ${test.name}`);
+    console.log("-".repeat(60));
 
-  if (cfResults) {
-    console.log("\n📊 Cloudflare Results:");
-    console.log(`  Successful requests: ${cfResults.successful}/${ITERATIONS}`);
-    console.log(`  Min:  ${formatTime(cfResults.min)}`);
-    console.log(`  Max:  ${formatTime(cfResults.max)}`);
-    console.log(`  Mean: ${formatTime(cfResults.mean)}`);
-  }
-
-  if (vercelResults) {
-    console.log("\n📊 Vercel Results:");
-    console.log(
-      `  Successful requests: ${vercelResults.successful}/${ITERATIONS}`
+    const cfResults = await runBenchmark(
+      test.cfUrl,
+      `${test.name} - Cloudflare`
     );
-    console.log(`  Min:  ${formatTime(vercelResults.min)}`);
-    console.log(`  Max:  ${formatTime(vercelResults.max)}`);
-    console.log(`  Mean: ${formatTime(vercelResults.mean)}`);
-  }
+    const vercelResults = await runBenchmark(
+      test.vercelUrl,
+      `${test.name} - Vercel`
+    );
 
-  if (cfResults && vercelResults) {
-    console.log("\n📈 Comparison:");
-    const ratio = cfResults.mean / vercelResults.mean;
-    if (ratio > 1) {
+    console.log("=".repeat(60));
+    console.log(`  RESULTS (${test.name})`);
+    console.log("=".repeat(60));
+
+    if (cfResults) {
+      console.log("\n📊 Cloudflare Results:");
       console.log(
-        `  Vercel is ${ratio.toFixed(2)}x faster than Cloudflare (by mean)`
+        `  Successful requests: ${cfResults.successful}/${ITERATIONS}`
       );
-    } else {
-      console.log(
-        `  Cloudflare is ${(1 / ratio).toFixed(2)}x faster than Vercel (by mean)`
-      );
+      console.log(`  Min:  ${formatTime(cfResults.min)}`);
+      console.log(`  Max:  ${formatTime(cfResults.max)}`);
+      console.log(`  Mean: ${formatTime(cfResults.mean)}`);
     }
+
+    if (vercelResults) {
+      console.log("\n📊 Vercel Results:");
+      console.log(
+        `  Successful requests: ${vercelResults.successful}/${ITERATIONS}`
+      );
+      console.log(`  Min:  ${formatTime(vercelResults.min)}`);
+      console.log(`  Max:  ${formatTime(vercelResults.max)}`);
+      console.log(`  Mean: ${formatTime(vercelResults.mean)}`);
+    }
+
+    if (cfResults && vercelResults) {
+      console.log("\n📈 Comparison:");
+      const ratio = cfResults.mean / vercelResults.mean;
+      if (ratio > 1) {
+        console.log(
+          `  Vercel is ${ratio.toFixed(2)}x faster than Cloudflare (by mean)`
+        );
+      } else {
+        console.log(
+          `  Cloudflare is ${(1 / ratio).toFixed(2)}x faster than Vercel (by mean)`
+        );
+      }
+    }
+
+    allResults.push({
+      name: test.name,
+      urls: { cloudflare: test.cfUrl, vercel: test.vercelUrl },
+      results: { cloudflare: cfResults, vercel: vercelResults },
+    });
   }
 
   console.log("\n" + "=".repeat(60));
 
-  // Write results to results-(datetime).json inside results/ directory
+  // Write consolidated results to results-(datetime).json inside results/ directory
   try {
     const resultsDir = path.resolve(__dirname, "results");
     await fs.promises.mkdir(resultsDir, { recursive: true });
@@ -125,8 +157,7 @@ async function main() {
       timestamp,
       iterations: ITERATIONS,
       concurrency: 5,
-      urls: { cloudflare: CF_URL, vercel: VERCEL_URL },
-      results: { cloudflare: cfResults, vercel: vercelResults },
+      tests: allResults,
     };
 
     await fs.promises.writeFile(
