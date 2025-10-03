@@ -314,7 +314,7 @@ export default {
 
       // Integer arithmetic and bitwise operations
       for (let i = 0; i < 10_000_000; i++) {
-        result += (i * 31) ^ (i << 3) & 0xFFFFFFFF;
+        result += ((i * 31) ^ (i << 3)) & 0xFFFFFFFF;
         result = (result * 1103515245 + 12345) & 0x7FFFFFFF; // LCG
       }
 
