@@ -1,0 +1,12 @@
+{
+  "name": "vanilla-vercel-edition",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel"
+  },
+  "devDependencies": {
+    "vercel": "^37.0.0"
+  }
+}

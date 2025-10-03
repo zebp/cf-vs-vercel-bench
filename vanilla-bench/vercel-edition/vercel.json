@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "api/bench.js": {
+      "memory": 3008,
+      "maxDuration": 10
+    },
+    "api/slower-bench.js": {
+      "memory": 3008,
+      "maxDuration": 30
+    }
+  }
+}
