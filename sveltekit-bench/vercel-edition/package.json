@@ -1,5 +1,5 @@
 {
-	"name": "vercel-edition",
+	"name": "vercel-sveltekit-bench",
 	"private": true,
 	"version": "0.0.2",
 	"type": "module",

@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>vercel sveltekit test</title>
+	<title>vercel sveltekit bench</title>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 

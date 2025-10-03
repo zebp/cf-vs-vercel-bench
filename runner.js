@@ -11,7 +11,7 @@ const tests = [
   },
   {
     name: "sveltekit",
-    cfUrl: "https://svelteflare-example.davis-benjamin41902.workers.dev",
+    cfUrl: "https://cf-sveltekit-bench.davis-benjamin41902.workers.dev",
     vercelUrl: "https://vercel-svelte-bench.vercel.app",
   },
 ];
