@@ -1,0 +1,17 @@
+{
+  "name": "react-ssr-vercel-edition",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "vercel": "^37.0.0"
+  }
+}

@@ -9,7 +9,13 @@ const tests = [
     cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/slower-bench",
     vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
   },
+  {
+    name: "react-ssr-bench",
+    cfUrl: "https://react-ssr-cf.pinglabs.workers.dev/bench",
+    vercelUrl: "https://react-ssr-bench-v2.vercel.app/api/bench",
+  },
 ];
+
 const fs = require("fs");
 const path = require("path");
 
