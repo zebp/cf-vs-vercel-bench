@@ -1,0 +1,16 @@
+/**
+ * Wrangler configuration for React SSR CloudFlare Worker
+ * For more details: https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "react-ssr-cf",
+  "main": "worker.js",
+  "compatibility_date": "2025-03-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
