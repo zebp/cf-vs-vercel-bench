@@ -7,9 +7,9 @@ const tests = [
     vercelUrl: "https://vercel-ssr-bench-v2-hidden.vercel.app/bench",
   },
   {
-    name: "vanilla-slower",
-    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/slower-bench",
-    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
+    name: "react-ssr-bench",
+    cfUrl: "https://react-ssr-cf.pinglabs.workers.dev/bench",
+    vercelUrl: "https://react-ssr-bench-v2.vercel.app/api/bench",
   },
   {
     name: "sveltekit",
@@ -17,9 +17,19 @@ const tests = [
     vercelUrl: "https://vercel-svelte-bench.vercel.app",
   },
   {
-    name: "react-ssr-bench",
-    cfUrl: "https://react-ssr-cf.pinglabs.workers.dev/bench",
-    vercelUrl: "https://react-ssr-bench-v2.vercel.app/api/bench",
+    name: "shitty-sine-bench",
+    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/shitty-sine-bench",
+    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/shitty-sine-bench",
+  },
+  {
+    name: "realistic-math-bench",
+    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/realistic-math-bench",
+    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/realistic-math-bench",
+  },
+  {
+    name: "vanilla-slower",
+    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/slower-bench",
+    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
   },
 ];
 
