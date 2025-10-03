@@ -10,6 +10,11 @@ const tests = [
     vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
   },
   {
+    name: "sveltekit",
+    cfUrl: "https://cf-sveltekit-bench.davis-benjamin41902.workers.dev",
+    vercelUrl: "https://vercel-svelte-bench.vercel.app",
+  },
+  {
     name: "react-ssr-bench",
     cfUrl: "https://react-ssr-cf.pinglabs.workers.dev/bench",
     vercelUrl: "https://react-ssr-bench-v2.vercel.app/api/bench",
@@ -136,7 +141,9 @@ async function main() {
         );
       } else {
         console.log(
-          `  Cloudflare is ${(1 / ratio).toFixed(2)}x faster than Vercel (by mean)`
+          `  Cloudflare is ${(1 / ratio).toFixed(
+            2
+          )}x faster than Vercel (by mean)`
         );
       }
     }
