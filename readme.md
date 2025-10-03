@@ -55,3 +55,13 @@ Mean: 0.889s
 ### 📈 Comparison:
 
 Vercel is 3.29x faster than Cloudflare (by mean)
+
+## FAQ
+
+### Why do this?
+
+Someone was lying on the internet and it went viral. I was annoyed. This should show why.
+
+### Isn't this measuring round trip time? Why not measure actual compute time?
+
+Fun fact - you \_can't use `performance.now()` on CloudFlare. It's [frozen due to spectre side channeling](https://developers.cloudflare.com/workers/runtime-apis/performance/#:~:text=When%20Workers%20are%20deployed%20to%20Cloudflare%2C%20as%20a%20security%20measure%20to%20mitigate%20against%20Spectre%20attacks). Since CloudFlare runs your code in an isolate instead of a vm, you're sharing memory with other workers by other devs. They have to do shit like this to keep your data safe.
