@@ -11,7 +11,7 @@ const tests = [
   },
   {
     name: "sveltekit",
-    cfUrl: "https://cf-sveltekit-bench.davis-benjamin41902.workers.dev",
+    cfUrl: "https://cf-sveltekit-bench.pinglabs.workers.dev/",
     vercelUrl: "https://vercel-svelte-bench.vercel.app",
   },
   {
@@ -24,31 +24,40 @@ const tests = [
 const fs = require("fs");
 const path = require("path");
 
-const ITERATIONS = 50;
+const ITERATIONS = 100;
+const CONCURRENCY = 8;
 
 async function measureResponseTime(url) {
   const start = performance.now();
   try {
     const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    await response.text(); // Ensure the full response is received
     const end = performance.now();
-    return end - start;
+    const responseTime = end - start;
+
+    // Read the response body
+    await response.text();
+
+    return {
+      time: responseTime,
+      status: response.status,
+      success: response.ok,
+    };
   } catch (error) {
-    console.error(`Error fetching ${url}:`, error.message);
-    return null;
+    return {
+      time: null,
+      status: null,
+      success: false,
+      error: error.message,
+    };
   }
 }
 
 async function runBenchmark(url, name) {
   console.log(`\n🏃 Running benchmark for ${name}...`);
   console.log(`URL: ${url}`);
-  console.log(`Iterations: ${ITERATIONS} (concurrency: 5)\n`);
+  console.log(`Iterations: ${ITERATIONS} (concurrency: ${CONCURRENCY})\n`);
 
-  const times = [];
-  const CONCURRENCY = 5;
+  const results = [];
   let completed = 0;
   let nextIndex = 0;
 
@@ -57,8 +66,8 @@ async function runBenchmark(url, name) {
     while (true) {
       const i = nextIndex++;
       if (i >= ITERATIONS) break;
-      const time = await measureResponseTime(url);
-      if (time !== null) times.push(time);
+      const result = await measureResponseTime(url);
+      results.push(result);
       completed++;
       process.stdout.write(`  Progress: ${completed}/${ITERATIONS}\r`);
     }
@@ -70,17 +79,56 @@ async function runBenchmark(url, name) {
 
   console.log(`\n`);
 
+  // Analyze results
+  const successful = results.filter((r) => r.success);
+  const failed = results.filter((r) => !r.success);
+  const times = successful.map((r) => r.time);
+
+  // Count status codes
+  const statusCodes = {};
+  results.forEach((r) => {
+    if (r.status !== null) {
+      statusCodes[r.status] = (statusCodes[r.status] || 0) + 1;
+    }
+  });
+
+  // Count error types
+  const errors = {};
+  failed.forEach((r) => {
+    if (r.error) {
+      errors[r.error] = (errors[r.error] || 0) + 1;
+    }
+  });
+
+  const failureRate = (failed.length / results.length) * 100;
+
   if (times.length === 0) {
     console.log(`❌ No successful requests for ${name}`);
+    console.log(`   Failure rate: ${failureRate.toFixed(2)}%`);
+    if (Object.keys(statusCodes).length > 0) {
+      console.log(`   Status codes:`, statusCodes);
+    }
+    if (Object.keys(errors).length > 0) {
+      console.log(`   Errors:`, errors);
+    }
     return null;
   }
 
   const min = Math.min(...times);
   const max = Math.max(...times);
   const mean = times.reduce((a, b) => a + b, 0) / times.length;
-  const successful = times.length;
 
-  return { min, max, mean, successful, times };
+  return {
+    min,
+    max,
+    mean,
+    successful: successful.length,
+    failed: failed.length,
+    failureRate,
+    statusCodes,
+    errors: Object.keys(errors).length > 0 ? errors : undefined,
+    times,
+  };
 }
 
 function formatTime(ms) {
@@ -117,6 +165,12 @@ async function main() {
       console.log(
         `  Successful requests: ${cfResults.successful}/${ITERATIONS}`
       );
+      console.log(`  Failed requests: ${cfResults.failed}/${ITERATIONS}`);
+      console.log(`  Failure rate: ${cfResults.failureRate.toFixed(2)}%`);
+      console.log(`  Status codes:`, cfResults.statusCodes);
+      if (cfResults.errors) {
+        console.log(`  Errors:`, cfResults.errors);
+      }
       console.log(`  Min:  ${formatTime(cfResults.min)}`);
       console.log(`  Max:  ${formatTime(cfResults.max)}`);
       console.log(`  Mean: ${formatTime(cfResults.mean)}`);
@@ -127,6 +181,12 @@ async function main() {
       console.log(
         `  Successful requests: ${vercelResults.successful}/${ITERATIONS}`
       );
+      console.log(`  Failed requests: ${vercelResults.failed}/${ITERATIONS}`);
+      console.log(`  Failure rate: ${vercelResults.failureRate.toFixed(2)}%`);
+      console.log(`  Status codes:`, vercelResults.statusCodes);
+      if (vercelResults.errors) {
+        console.log(`  Errors:`, vercelResults.errors);
+      }
       console.log(`  Min:  ${formatTime(vercelResults.min)}`);
       console.log(`  Max:  ${formatTime(vercelResults.max)}`);
       console.log(`  Mean: ${formatTime(vercelResults.mean)}`);
