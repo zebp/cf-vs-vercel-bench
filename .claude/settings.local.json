@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create --title \"Add vanilla SSR benchmark\" --body \"$(cat <<''EOF''\n## Summary\n\n- Adds vanilla JavaScript SSR implementations for both CloudFlare Workers and Vercel Serverless Functions\n- Includes two benchmark routes: `/bench` (standard) and `/slower-bench` (heavier computation)\n- No framework overhead - pure string concatenation for HTML rendering\n- Uses same computational logic as Next.js benchmark (primes, fibonacci, complex data generation)\n\n## Implementation Details\n\n**CloudFlare Worker:**\n- `/bench` - Standard benchmark\n- `/slower-bench` - 5x more primes (500k), 3x more sections (150), 9x more items\n\n**Vercel Serverless:**\n- `/api/bench` - Standard benchmark\n- `/api/slower-bench` - Same heavy computation with 30s timeout\n\n## Test Plan\n\n- [ ] Deploy CloudFlare worker and verify `/bench` endpoint works\n- [ ] Deploy CloudFlare worker and verify `/slower-bench` endpoint works\n- [ ] Deploy Vercel function and verify `/api/bench` endpoint works\n- [ ] Deploy Vercel function and verify `/api/slower-bench` endpoint works\n- [ ] Run benchmark comparison between vanilla and Next.js implementations\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
