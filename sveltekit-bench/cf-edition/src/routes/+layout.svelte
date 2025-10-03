@@ -6,6 +6,7 @@
 </script>
 
 <svelte:head>
+	<title>cf sveltekit test</title>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
