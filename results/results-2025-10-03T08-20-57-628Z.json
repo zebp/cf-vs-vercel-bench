@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-10-03T08:20:57.628Z",
+  "iterations": 15,
+  "concurrency": 10,
+  "tests": [
+    {
+      "name": "shitty-sine-bench",
+      "urls": {
+        "cloudflare": "https://vanilla-ssr-cf.pinglabs.workers.dev/shitty-sine-bench",
+        "vercel": "https://vanilla-bench-v2.vercel.app/api/shitty-sine-bench"
+      },
+      "results": {
+        "cloudflare": {
+          "min": 8442.669417,
+          "max": 53676.585167,
+          "mean": 23001.73130006667,
+          "successful": 15,
+          "failed": 0,
+          "failureRate": 0,
+          "statusCodes": {
+            "200": 15
+          },
+          "times": [
+            8442.669417,
+            10154.116375000001,
+            11277.270666999999,
+            13564.961667000001,
+            17115.160583,
+            21028.439749999998,
+            21883.011333,
+            11000.390875,
+            17430.556708999997,
+            27081.461542,
+            21229.02475,
+            17112.949833,
+            40464.244957999996,
+            53565.125875,
+            53676.585167
+          ]
+        },
+        "vercel": null
+      }
+    }
+  ]
+}

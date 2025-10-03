@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vercel dev",
-    "deploy": "vercel"
+    "deploy": "vercel deploy --prod"
   },
   "devDependencies": {
     "vercel": "^37.0.0"
