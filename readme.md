@@ -4,7 +4,11 @@ This repo is meant to benchmark SSR performance between CloudFlare and Vercel. T
 
 ## Results
 
-I ran the Next.js bench 50 times on both platforms.
+I ran the Next.js bench 50 times on both platforms. From my findings, **Vercel is 2.5x to 3.3x faster than CloudFlare for server rendering**.
+
+Do these numbers really matter? Meh. Not really. Most "slowness" for web apps is APIs and queries being slow. CPU is rarely the bottleneck.
+
+Regardless, here's the results laid out (you can see individual runs in the `results` directory).
 
 ## Run 1 (standard function size)
 
@@ -35,17 +39,17 @@ This test is using the "Performance" function size (2 vcpu + 4gb RAM) on Vercel.
 ### 📊 Cloudflare Results:
 
 Successful requests: 50/50
-Min: 1.469s
-Max: 6.010s
-Mean: 2.965s
+Min: 1.191s
+Max: 5.731s
+Mean: 2.926s
 
 ### 📊 Vercel Results:
 
 Successful requests: 50/50
-Min: 0.650s
-Max: 2.077s
-Mean: 1.000s
+Min: 0.658s
+Max: 1.804s
+Mean: 0.889s
 
 ### 📈 Comparison:
 
-**Vercel is 2.96x faster than Cloudflare (by mean)**
+Vercel is 3.29x faster than Cloudflare (by mean)
