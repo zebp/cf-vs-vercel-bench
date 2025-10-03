@@ -1,60 +1,56 @@
 # CloudFlare vs Vercel benchmark
 
-This repo is meant to benchmark SSR performance between CloudFlare and Vercel. There's a lot of misinformation going around and I'm annoyed.
+This repo is meant to benchmark SSR performance between CloudFlare and Vercel. There's a lot of misinformation going around and I'm annoyed. So I wrote a really annoying component and server rendered it in a bunch of different ways.
 
 ## Results
 
-I ran the Next.js bench 50 times on both platforms. From my findings, **Vercel is 2.5x to 3.3x faster than CloudFlare for server rendering**.
+From my findings, **Vercel is 1.37x to 4.8x faster than CloudFlare for server rendering**.
 
-I also noticed some CF runs would perform TERRIBLY. Like 1/5th of attempts taking 10+ seconds (mean is closer to 1.2s). Horrible variability.
+I also noticed some CF runs would perform TERRIBLY on Next and SvelteKit. Like 1/5th of attempts taking 10+ seconds (mean is closer to 1.2s). Horrible variability.
 
 Do these numbers really matter? Meh. Not really. Most "slowness" for web apps is APIs and queries being slow. CPU is rarely the bottleneck.
 
 Regardless, here's the results laid out (you can see individual runs in the `results` directory).
 
-## Run 1 (standard function size)
+I ran 100 iterations with every framework/provider combo. The results will shock you!
 
-This test is using the "standard" function size (1 vcpu + 2gb RAM) on Vercel.
+All Vercel tests were run with "performance" function environments (2 vcpu and 4gb ram). I ran multiple runs on "Standard" as well (included in `/results`), difference wasn't as large as expected (~10% hit overall).
 
-### 📊 Cloudflare Results:
+## next-js
 
-Successful requests: 50/50
-Min: 1.530s
-Max: 5.098s
-Mean: 3.074s
+| Platform   | Mean   | Min    | Max    | Variability |
+| ---------- | ------ | ------ | ------ | ----------- |
+| Cloudflare | 2.217s | 1.183s | 3.604s | 2.421s      |
+| Vercel     | 0.448s | 0.318s | 0.678s | 0.360s      |
 
-### 📊 Vercel Results (us-west-1 w/ standard function size):
+**Winner:** Vercel (4.95x faster)
 
-Successful requests: 50/50
-Min: 1.017s
-Max: 1.834s
-Mean: 1.155s
+## vanilla-slower
 
-### 📈 Comparison:
+| Platform   | Mean   | Min    | Max    | Variability |
+| ---------- | ------ | ------ | ------ | ----------- |
+| Cloudflare | 0.308s | 0.148s | 1.004s | 0.856s      |
+| Vercel     | 0.245s | 0.198s | 0.516s | 0.318s      |
 
-**Vercel is 2.66x faster than Cloudflare (by mean)**
+**Winner:** Vercel (1.26x faster)
 
-## Run 2 ("Performance" function size)
+## sveltekit
 
-This test is using the "Performance" function size (2 vcpu + 4gb RAM) on Vercel.
+| Platform   | Mean   | Min    | Max    | Variability |
+| ---------- | ------ | ------ | ------ | ----------- |
+| Cloudflare | 0.161s | 0.061s | 0.609s | 0.548s      |
+| Vercel     | 0.086s | 0.054s | 0.304s | 0.250s      |
 
-### 📊 Cloudflare Results:
+**Winner:** Vercel (1.87x faster)
 
-Successful requests: 50/50
-Min: 1.191s
-Max: 5.731s
-Mean: 2.926s
+## react-ssr-bench
 
-### 📊 Vercel Results:
+| Platform   | Mean   | Min    | Max    | Variability |
+| ---------- | ------ | ------ | ------ | ----------- |
+| Cloudflare | 0.566s | 0.205s | 1.275s | 1.070s      |
+| Vercel     | 0.122s | 0.074s | 0.342s | 0.268s      |
 
-Successful requests: 50/50
-Min: 0.658s
-Max: 1.804s
-Mean: 0.889s
-
-### 📈 Comparison:
-
-Vercel is 3.29x faster than Cloudflare (by mean)
+**Winner:** Vercel (4.65x faster)
 
 ## FAQ
 

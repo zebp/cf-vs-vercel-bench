@@ -1,8 +1,10 @@
+// Note: This whole file is vibe coded. I do not know how any of the formatting works. Blame Claude.
+
 const tests = [
   {
     name: "next-js",
+    cfUrl: "https://next-cf-bench.pinglabs.workers.dev/bench",
     vercelUrl: "https://vercel-ssr-bench-v2-hidden.vercel.app/bench",
-    cfUrl: "https://my-next-app.pinglabs.workers.dev/bench",
   },
   {
     name: "vanilla-slower",
@@ -25,7 +27,7 @@ const fs = require("fs");
 const path = require("path");
 
 const ITERATIONS = 100;
-const CONCURRENCY = 8;
+const CONCURRENCY = 10;
 
 async function measureResponseTime(url) {
   const start = performance.now();
@@ -165,11 +167,13 @@ async function main() {
       console.log(
         `  Successful requests: ${cfResults.successful}/${ITERATIONS}`
       );
-      console.log(`  Failed requests: ${cfResults.failed}/${ITERATIONS}`);
-      console.log(`  Failure rate: ${cfResults.failureRate.toFixed(2)}%`);
-      console.log(`  Status codes:`, cfResults.statusCodes);
-      if (cfResults.errors) {
-        console.log(`  Errors:`, cfResults.errors);
+      if (cfResults.failed > 0) {
+        console.log(`  Failed requests: ${cfResults.failed}/${ITERATIONS}`);
+        console.log(`  Failure rate: ${cfResults.failureRate.toFixed(2)}%`);
+        console.log(`  Status codes:`, cfResults.statusCodes);
+        if (cfResults.errors) {
+          console.log(`  Errors:`, cfResults.errors);
+        }
       }
       console.log(`  Min:  ${formatTime(cfResults.min)}`);
       console.log(`  Max:  ${formatTime(cfResults.max)}`);
@@ -181,11 +185,13 @@ async function main() {
       console.log(
         `  Successful requests: ${vercelResults.successful}/${ITERATIONS}`
       );
-      console.log(`  Failed requests: ${vercelResults.failed}/${ITERATIONS}`);
-      console.log(`  Failure rate: ${vercelResults.failureRate.toFixed(2)}%`);
-      console.log(`  Status codes:`, vercelResults.statusCodes);
-      if (vercelResults.errors) {
-        console.log(`  Errors:`, vercelResults.errors);
+      if (vercelResults.failed > 0) {
+        console.log(`  Failed requests: ${vercelResults.failed}/${ITERATIONS}`);
+        console.log(`  Failure rate: ${vercelResults.failureRate.toFixed(2)}%`);
+        console.log(`  Status codes:`, vercelResults.statusCodes);
+        if (vercelResults.errors) {
+          console.log(`  Errors:`, vercelResults.errors);
+        }
       }
       console.log(`  Min:  ${formatTime(vercelResults.min)}`);
       console.log(`  Max:  ${formatTime(vercelResults.max)}`);
@@ -217,6 +223,46 @@ async function main() {
 
   console.log("\n" + "=".repeat(60));
 
+  // Output final results summary for README
+  console.log("\n\n" + "=".repeat(60));
+  console.log("  FINAL RESULTS SUMMARY");
+  console.log("=".repeat(60) + "\n");
+
+  for (const result of allResults) {
+    const cf = result.results.cloudflare;
+    const vercel = result.results.vercel;
+
+    console.log(`## ${result.name}`);
+    console.log();
+
+    if (cf && vercel) {
+      const ratio = vercel.mean / cf.mean;
+      const winner = ratio > 1 ? "Cloudflare" : "Vercel";
+      const speedup = ratio > 1 ? ratio : 1 / ratio;
+
+      const cfVariability = cf.max - cf.min;
+      const vercelVariability = vercel.max - vercel.min;
+
+      console.log(`| Platform   | Mean | Min | Max | Variability |`);
+      console.log(`|------------|------|-----|-----|-------------|`);
+      console.log(
+        `| Cloudflare | ${formatTime(cf.mean)} | ${formatTime(cf.min)} | ${formatTime(cf.max)} | ${formatTime(cfVariability)} |`
+      );
+      console.log(
+        `| Vercel     | ${formatTime(vercel.mean)} | ${formatTime(vercel.min)} | ${formatTime(vercel.max)} | ${formatTime(vercelVariability)} |`
+      );
+      console.log();
+      console.log(`**Winner:** ${winner} (${speedup.toFixed(2)}x faster)`);
+      console.log();
+    }
+  }
+
+  console.log("---");
+  console.log(
+    `\n*Benchmark run: ${new Date().toISOString().split("T")[0]} • ${ITERATIONS} iterations • Concurrency: ${CONCURRENCY}*`
+  );
+  console.log("\n" + "=".repeat(60) + "\n");
+
   // Write consolidated results to results-(datetime).json inside results/ directory
   try {
     const resultsDir = path.resolve(__dirname, "results");
@@ -229,7 +275,7 @@ async function main() {
     const summary = {
       timestamp,
       iterations: ITERATIONS,
-      concurrency: 5,
+      concurrency: CONCURRENCY,
       tests: allResults,
     };
 
@@ -238,7 +284,7 @@ async function main() {
       JSON.stringify(summary, null, 2),
       "utf8"
     );
-    console.log(`\n📝 Results written to: ${filePath}`);
+    console.log(`📝 Results written to: ${filePath}`);
   } catch (err) {
     console.error("Failed to write results file:", err.message);
   }
