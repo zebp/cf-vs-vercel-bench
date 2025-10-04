@@ -10,5 +10,6 @@
 	"compatibility_date": "2025-05-13",
 	"observability": {
 		"enabled": true
-	}
+	},
+	"account_id": "2a5bb09ba3a450e93ceec4918a6bd96f"
 }

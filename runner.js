@@ -3,33 +3,39 @@
 const tests = [
   {
     name: "next-js",
-    cfUrl: "https://next-cf-bench.pinglabs.workers.dev/bench",
-    vercelUrl: "https://vercel-ssr-bench-v2-hidden.vercel.app/bench",
+    cfUrl:
+      "https://next-cf-bench.theo-s-cool-new-test-account-10-3.workers.dev/bench",
+    vercelUrl: "https://vercel-ssr-bench-v2-h.vercel.app/bench",
   },
   {
     name: "react-ssr-bench",
-    cfUrl: "https://react-ssr-cf.pinglabs.workers.dev/bench",
-    vercelUrl: "https://react-ssr-bench-v2.vercel.app/api/bench",
+    cfUrl:
+      "https://react-ssr-cf.theo-s-cool-new-test-account-10-3.workers.dev/bench",
+    vercelUrl: "https://react-ssr-bench-v2-h.vercel.app/api/bench",
   },
   {
     name: "sveltekit",
-    cfUrl: "https://cf-sveltekit-bench.pinglabs.workers.dev/",
-    vercelUrl: "https://vercel-svelte-bench.vercel.app",
+    cfUrl:
+      "https://cf-sveltekit-bench.theo-s-cool-new-test-account-10-3.workers.dev/",
+    vercelUrl: "https://vercel-svelte-bench-h.vercel.app",
   },
   {
     name: "shitty-sine-bench",
-    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/shitty-sine-bench",
-    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/shitty-sine-bench",
+    cfUrl:
+      "https://vanilla-ssr-cf.theo-s-cool-new-test-account-10-3.workers.dev/shitty-sine-bench",
+    vercelUrl: "https://vanilla-bench-v2-h.vercel.app/api/shitty-sine-bench",
   },
   {
     name: "realistic-math-bench",
-    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/realistic-math-bench",
-    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/realistic-math-bench",
+    cfUrl:
+      "https://vanilla-ssr-cf.theo-s-cool-new-test-account-10-3.workers.dev/realistic-math-bench",
+    vercelUrl: "https://vanilla-bench-v2-h.vercel.app/api/realistic-math-bench",
   },
   {
     name: "vanilla-slower",
-    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/slower-bench",
-    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
+    cfUrl:
+      "https://vanilla-ssr-cf.theo-s-cool-new-test-account-10-3.workers.dev/slower-bench",
+    vercelUrl: "https://vanilla-bench-v2-h.vercel.app/api/slower-bench",
   },
 ];
 

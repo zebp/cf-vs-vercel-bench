@@ -7,10 +7,9 @@
   "name": "vanilla-ssr-cf",
   "main": "worker.js",
   "compatibility_date": "2025-03-01",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "observability": {
-    "enabled": true
-  }
+    "enabled": true,
+  },
+  "account_id": "2a5bb09ba3a450e93ceec4918a6bd96f",
 }
