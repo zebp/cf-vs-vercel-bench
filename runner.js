@@ -3,33 +3,36 @@
 const tests = [
   {
     name: "next-js",
-    cfUrl: "https://next-cf-bench.zeb.workers.dev/bench",
+    cfUrl: "https://next-cf-bench.zebpiasecki.workers.dev/bench",
     vercelUrl: "https://vercel-edition-blond.vercel.app/bench",
   },
   {
     name: "react-ssr-bench",
-    cfUrl: "https://react-ssr-cf.zeb.workers.dev/bench",
-    vercelUrl: "https://react-ssr-bench-v2.vercel.app/api/bench",
+    cfUrl: "https://react-ssr-cf.zebpiasecki.workers.dev/bench",
+    vercelUrl: "https://cf-vs-vercel-bench-pqc1.vercel.app/api/bench",
   },
   {
     name: "sveltekit",
-    cfUrl: "https://cf-sveltekit-bench.zeb.workers.dev/",
-    vercelUrl: "https://vercel-svelte-bench.vercel.app",
+    cfUrl: " https://cf-sveltekit-bench.zebpiasecki.workers.dev/",
+    vercelUrl: "https://svelte-cf-vercel-bench.vercel.app/",
   },
   {
     name: "shitty-sine-bench",
-    cfUrl: "https://vanilla-ssr-cf.zeb.workers.dev/shitty-sine-bench",
-    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/shitty-sine-bench",
+    cfUrl: "https://vanilla-ssr-cf.zebpiasecki.workers.dev/shitty-sine-bench",
+    vercelUrl:
+      "https://cf-vs-vercel-bench-rho.vercel.app/api/shitty-sine-bench",
   },
   {
     name: "realistic-math-bench",
-    cfUrl: "https://vanilla-ssr-cf.zeb.workers.dev/realistic-math-bench",
-    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/realistic-math-bench",
+    cfUrl:
+      "https://vanilla-ssr-cf.zebpiasecki.workers.dev/realistic-math-bench",
+    vercelUrl:
+      "https://cf-vs-vercel-bench-rho.vercel.app/api/realistic-math-bench",
   },
   {
     name: "vanilla-slower",
-    cfUrl: "https://vanilla-ssr-cf.zeb.workers.dev/slower-bench",
-    vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
+    cfUrl: "https://vanilla-ssr-cf.zebpiasecki.workers.dev/slower-bench",
+    vercelUrl: "https://cf-vs-vercel-bench-rho.vercel.app/api/slower-bench",
   },
 ];
 
