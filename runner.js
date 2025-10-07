@@ -3,32 +3,32 @@
 const tests = [
   {
     name: "next-js",
-    cfUrl: "https://next-cf-bench.pinglabs.workers.dev/bench",
-    vercelUrl: "https://vercel-ssr-bench-v2-hidden.vercel.app/bench",
+    cfUrl: "https://next-cf-bench.zeb.workers.dev/bench",
+    vercelUrl: "https://vercel-edition-blond.vercel.app/bench",
   },
   {
     name: "react-ssr-bench",
-    cfUrl: "https://react-ssr-cf.pinglabs.workers.dev/bench",
+    cfUrl: "https://react-ssr-cf.zeb.workers.dev/bench",
     vercelUrl: "https://react-ssr-bench-v2.vercel.app/api/bench",
   },
   {
     name: "sveltekit",
-    cfUrl: "https://cf-sveltekit-bench.pinglabs.workers.dev/",
+    cfUrl: "https://cf-sveltekit-bench.zeb.workers.dev/",
     vercelUrl: "https://vercel-svelte-bench.vercel.app",
   },
   {
     name: "shitty-sine-bench",
-    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/shitty-sine-bench",
+    cfUrl: "https://vanilla-ssr-cf.zeb.workers.dev/shitty-sine-bench",
     vercelUrl: "https://vanilla-bench-v2.vercel.app/api/shitty-sine-bench",
   },
   {
     name: "realistic-math-bench",
-    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/realistic-math-bench",
+    cfUrl: "https://vanilla-ssr-cf.zeb.workers.dev/realistic-math-bench",
     vercelUrl: "https://vanilla-bench-v2.vercel.app/api/realistic-math-bench",
   },
   {
     name: "vanilla-slower",
-    cfUrl: "https://vanilla-ssr-cf.pinglabs.workers.dev/slower-bench",
+    cfUrl: "https://vanilla-ssr-cf.zeb.workers.dev/slower-bench",
     vercelUrl: "https://vanilla-bench-v2.vercel.app/api/slower-bench",
   },
 ];
@@ -43,11 +43,11 @@ async function measureResponseTime(url) {
   const start = performance.now();
   try {
     const response = await fetch(url);
-    const end = performance.now();
-    const responseTime = end - start;
 
     // Read the response body
     await response.text();
+    const end = performance.now();
+    const responseTime = end - start;
 
     return {
       time: responseTime,
@@ -256,10 +256,14 @@ async function main() {
       console.log(`| Platform   | Mean | Min | Max | Variability |`);
       console.log(`|------------|------|-----|-----|-------------|`);
       console.log(
-        `| Cloudflare | ${formatTime(cf.mean)} | ${formatTime(cf.min)} | ${formatTime(cf.max)} | ${formatTime(cfVariability)} |`
+        `| Cloudflare | ${formatTime(cf.mean)} | ${formatTime(
+          cf.min
+        )} | ${formatTime(cf.max)} | ${formatTime(cfVariability)} |`
       );
       console.log(
-        `| Vercel     | ${formatTime(vercel.mean)} | ${formatTime(vercel.min)} | ${formatTime(vercel.max)} | ${formatTime(vercelVariability)} |`
+        `| Vercel     | ${formatTime(vercel.mean)} | ${formatTime(
+          vercel.min
+        )} | ${formatTime(vercel.max)} | ${formatTime(vercelVariability)} |`
       );
       console.log();
       console.log(`**Winner:** ${winner} (${speedup.toFixed(2)}x faster)`);
@@ -269,7 +273,9 @@ async function main() {
 
   console.log("---");
   console.log(
-    `\n*Benchmark run: ${new Date().toISOString().split("T")[0]} • ${ITERATIONS} iterations • Concurrency: ${CONCURRENCY}*`
+    `\n*Benchmark run: ${
+      new Date().toISOString().split("T")[0]
+    } • ${ITERATIONS} iterations • Concurrency: ${CONCURRENCY}*`
   );
   console.log("\n" + "=".repeat(60) + "\n");
 
