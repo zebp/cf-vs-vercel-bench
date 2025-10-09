@@ -16,12 +16,12 @@ const tests = [
     cfUrl: " https://cf-sveltekit-bench.zebpiasecki.workers.dev/",
     vercelUrl: "https://svelte-cf-vercel-bench.vercel.app/",
   },
-  {
-    name: "shitty-sine-bench",
-    cfUrl: "https://vanilla-ssr-cf.zebpiasecki.workers.dev/shitty-sine-bench",
-    vercelUrl:
-      "https://cf-vs-vercel-bench-rho.vercel.app/api/shitty-sine-bench",
-  },
+  // {
+  //   name: "shitty-sine-bench",
+  //   cfUrl: "https://vanilla-ssr-cf.zebpiasecki.workers.dev/shitty-sine-bench",
+  //   vercelUrl:
+  //     "https://cf-vs-vercel-bench-rho.vercel.app/api/shitty-sine-bench",
+  // },
   {
     name: "realistic-math-bench",
     cfUrl:
@@ -33,6 +33,21 @@ const tests = [
     name: "vanilla-slower",
     cfUrl: "https://vanilla-ssr-cf.zebpiasecki.workers.dev/slower-bench",
     vercelUrl: "https://cf-vs-vercel-bench-rho.vercel.app/api/slower-bench",
+  },
+  {
+    name: "speedtest",
+    cfUrl: "https://speed-test-cf.zebpiasecki.workers.dev/",
+    vercelUrl: "https://speedtest-vercel.vercel.app/api/test",
+  },
+  {
+    name: "react-router",
+    cfUrl: "https://react-router-test.zebpiasecki.workers.dev/",
+    vercelUrl: "https://react-router-vercel-ten.vercel.app/",
+  },
+  {
+    name: "react-router [suspended]",
+    cfUrl: "https://react-router-test.zebpiasecki.workers.dev/suspended",
+    vercelUrl: "https://react-router-vercel-ten.vercel.app/suspended",
   },
 ];
 
@@ -47,18 +62,21 @@ async function measureResponseTime(url) {
   try {
     const response = await fetch(url);
 
+    const ttfb = performance.now() - start;
+
     // Read the response body
     await response.text();
-    const end = performance.now();
-    const responseTime = end - start;
+    const responseTime = performance.now() - start;
 
     return {
+      ttfb,
       time: responseTime,
       status: response.status,
       success: response.ok,
     };
   } catch (error) {
     return {
+      ttfb: null,
       time: null,
       status: null,
       success: false,
@@ -97,7 +115,8 @@ async function runBenchmark(url, name) {
   // Analyze results
   const successful = results.filter((r) => r.success);
   const failed = results.filter((r) => !r.success);
-  const times = successful.map((r) => r.time);
+  const ttlb = successful.map((r) => r.time);
+  const ttfb = successful.map((r) => r.ttfb);
 
   // Count status codes
   const statusCodes = {};
@@ -117,7 +136,7 @@ async function runBenchmark(url, name) {
 
   const failureRate = (failed.length / results.length) * 100;
 
-  if (times.length === 0) {
+  if (ttlb.length === 0) {
     console.log(`❌ No successful requests for ${name}`);
     console.log(`   Failure rate: ${failureRate.toFixed(2)}%`);
     if (Object.keys(statusCodes).length > 0) {
@@ -129,20 +148,28 @@ async function runBenchmark(url, name) {
     return null;
   }
 
-  const min = Math.min(...times);
-  const max = Math.max(...times);
-  const mean = times.reduce((a, b) => a + b, 0) / times.length;
+  const ttlbMin = Math.min(...ttlb);
+  const ttlbMax = Math.max(...ttlb);
+  const ttlbMean = ttlb.reduce((a, b) => a + b, 0) / ttlb.length;
+
+  const minTtfb = Math.min(...ttfb);
+  const maxTtfb = Math.max(...ttfb);
+  const meanTtfb = ttfb.reduce((a, b) => a + b, 0) / ttfb.length;
 
   return {
-    min,
-    max,
-    mean,
+    ttlbMin,
+    ttlbMax,
+    ttlbMean,
+    minTtfb,
+    maxTtfb,
+    meanTtfb,
     successful: successful.length,
     failed: failed.length,
     failureRate,
     statusCodes,
     errors: Object.keys(errors).length > 0 ? errors : undefined,
-    times,
+    times: ttlb,
+    ttfb,
   };
 }
 
@@ -188,9 +215,12 @@ async function main() {
           console.log(`  Errors:`, cfResults.errors);
         }
       }
-      console.log(`  Min:  ${formatTime(cfResults.min)}`);
-      console.log(`  Max:  ${formatTime(cfResults.max)}`);
-      console.log(`  Mean: ${formatTime(cfResults.mean)}`);
+      console.log(`  Min:  ${formatTime(cfResults.ttlbMin)}`);
+      console.log(`  Max:  ${formatTime(cfResults.ttlbMax)}`);
+      console.log(`  Mean: ${formatTime(cfResults.ttlbMean)}`);
+      console.log(`  Min TTFB: ${formatTime(cfResults.minTtfb)}`);
+      console.log(`  Max TTFB: ${formatTime(cfResults.maxTtfb)}`);
+      console.log(`  Mean TTFB: ${formatTime(cfResults.meanTtfb)}`);
     }
 
     if (vercelResults) {
@@ -206,23 +236,28 @@ async function main() {
           console.log(`  Errors:`, vercelResults.errors);
         }
       }
-      console.log(`  Min:  ${formatTime(vercelResults.min)}`);
-      console.log(`  Max:  ${formatTime(vercelResults.max)}`);
-      console.log(`  Mean: ${formatTime(vercelResults.mean)}`);
+      console.log(`  Min TTLB:  ${formatTime(vercelResults.ttlbMin)}`);
+      console.log(`  Max TTLB:  ${formatTime(vercelResults.ttlbMax)}`);
+      console.log(`  Mean TTLB: ${formatTime(vercelResults.ttlbMean)}`);
+      console.log(`  Min TTFB: ${formatTime(vercelResults.minTtfb)}`);
+      console.log(`  Max TTFB: ${formatTime(vercelResults.maxTtfb)}`);
+      console.log(`  Mean TTFB: ${formatTime(vercelResults.meanTtfb)}`);
     }
 
     if (cfResults && vercelResults) {
       console.log("\n📈 Comparison:");
-      const ratio = cfResults.mean / vercelResults.mean;
+      const ratio = cfResults.ttlbMean / vercelResults.ttlbMean;
       if (ratio > 1) {
         console.log(
-          `  Vercel is ${ratio.toFixed(2)}x faster than Cloudflare (by mean)`
+          `  Vercel is ${ratio.toFixed(
+            2
+          )}x faster than Cloudflare (by mean) (TTLB)`
         );
       } else {
         console.log(
           `  Cloudflare is ${(1 / ratio).toFixed(
             2
-          )}x faster than Vercel (by mean)`
+          )}x faster than Vercel (by mean) (TTLB)`
         );
       }
     }
@@ -249,27 +284,52 @@ async function main() {
     console.log();
 
     if (cf && vercel) {
-      const ratio = vercel.mean / cf.mean;
-      const winner = ratio > 1 ? "Cloudflare" : "Vercel";
-      const speedup = ratio > 1 ? ratio : 1 / ratio;
+      const ratioTTLB = vercel.ttlbMean / cf.ttlbMean;
+      const winnerTTLB = ratioTTLB > 1 ? "Cloudflare" : "Vercel";
+      const speedupTTLB = ratioTTLB > 1 ? ratioTTLB : 1 / ratioTTLB;
 
-      const cfVariability = cf.max - cf.min;
-      const vercelVariability = vercel.max - vercel.min;
+      const ratioTTFB = vercel.meanTtfb / cf.meanTtfb;
+      const winnerTTFB = ratioTTFB > 1 ? "Cloudflare" : "Vercel";
+      const speedupTTFB = ratioTTFB > 1 ? ratioTTFB : 1 / ratioTTFB;
 
-      console.log(`| Platform   | Mean | Min | Max | Variability |`);
-      console.log(`|------------|------|-----|-----|-------------|`);
+      const cfVariabilityTTLB = cf.ttlbMax - cf.ttlbMin;
+      const cfVariabilityTTFB = cf.maxTtfb - cf.minTtfb;
+      const vercelVariabilityTTLB = vercel.ttlbMax - vercel.ttlbMin;
+      const vercelVariabilityTTFB = vercel.maxTtfb - vercel.minTtfb;
+
       console.log(
-        `| Cloudflare | ${formatTime(cf.mean)} | ${formatTime(
-          cf.min
-        )} | ${formatTime(cf.max)} | ${formatTime(cfVariability)} |`
+        `| Platform   | TTLB Mean | TTLB Min | TTLB Max | TTLB Variability | TTFB Mean| TTFB Min | TTFB Max | TTFB Variability |`
       );
       console.log(
-        `| Vercel     | ${formatTime(vercel.mean)} | ${formatTime(
-          vercel.min
-        )} | ${formatTime(vercel.max)} | ${formatTime(vercelVariability)} |`
+        `|------------|-----------|----------|----------|------------------|----------|----------|----------|------------------|`
+      );
+      console.log(
+        `| Cloudflare | ${formatTime(cf.ttlbMean)} | ${formatTime(
+          cf.ttlbMin
+        )} | ${formatTime(cf.ttlbMax)} | ${formatTime(
+          cfVariabilityTTLB
+        )} | ${formatTime(cf.meanTtfb)} | ${formatTime(
+          cf.minTtfb
+        )} | ${formatTime(cf.maxTtfb)} | ${formatTime(cfVariabilityTTFB)} |`
+      );
+      console.log(
+        `| Vercel     | ${formatTime(vercel.ttlbMean)} | ${formatTime(
+          vercel.ttlbMin
+        )} | ${formatTime(vercel.ttlbMax)} | ${formatTime(
+          vercelVariabilityTTLB
+        )} | ${formatTime(vercel.meanTtfb)} | ${formatTime(
+          vercel.minTtfb
+        )} | ${formatTime(vercel.maxTtfb)} | ${formatTime(
+          vercelVariabilityTTFB
+        )} |`
       );
       console.log();
-      console.log(`**Winner:** ${winner} (${speedup.toFixed(2)}x faster)`);
+      console.log(
+        `**Winner TTFB:** ${winnerTTFB} (${speedupTTFB.toFixed(2)}x faster)`
+      );
+      console.log(
+        `**Winner TTLB:** ${winnerTTLB} (${speedupTTLB.toFixed(2)}x faster)`
+      );
       console.log();
     }
   }
