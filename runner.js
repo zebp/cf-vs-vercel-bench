@@ -150,19 +150,19 @@ async function runBenchmark(url, name) {
 
   const ttlbMin = Math.min(...ttlb);
   const ttlbMax = Math.max(...ttlb);
-  const ttlbMean = ttlb.reduce((a, b) => a + b, 0) / ttlb.length;
+  const ttlbAvg = ttlb.reduce((a, b) => a + b, 0) / ttlb.length;
 
   const minTtfb = Math.min(...ttfb);
   const maxTtfb = Math.max(...ttfb);
-  const meanTtfb = ttfb.reduce((a, b) => a + b, 0) / ttfb.length;
+  const avgTtfb = ttfb.reduce((a, b) => a + b, 0) / ttfb.length;
 
   return {
     ttlbMin,
     ttlbMax,
-    ttlbMean,
+    ttlbAvg,
     minTtfb,
     maxTtfb,
-    meanTtfb,
+    avgTtfb,
     successful: successful.length,
     failed: failed.length,
     failureRate,
@@ -217,10 +217,10 @@ async function main() {
       }
       console.log(`  Min:  ${formatTime(cfResults.ttlbMin)}`);
       console.log(`  Max:  ${formatTime(cfResults.ttlbMax)}`);
-      console.log(`  Mean: ${formatTime(cfResults.ttlbMean)}`);
+      console.log(`  Avg: ${formatTime(cfResults.ttlbAvg)}`);
       console.log(`  Min TTFB: ${formatTime(cfResults.minTtfb)}`);
       console.log(`  Max TTFB: ${formatTime(cfResults.maxTtfb)}`);
-      console.log(`  Mean TTFB: ${formatTime(cfResults.meanTtfb)}`);
+      console.log(`  Avg TTFB: ${formatTime(cfResults.avgTtfb)}`);
     }
 
     if (vercelResults) {
@@ -238,26 +238,26 @@ async function main() {
       }
       console.log(`  Min TTLB:  ${formatTime(vercelResults.ttlbMin)}`);
       console.log(`  Max TTLB:  ${formatTime(vercelResults.ttlbMax)}`);
-      console.log(`  Mean TTLB: ${formatTime(vercelResults.ttlbMean)}`);
+      console.log(`  Avg TTLB: ${formatTime(vercelResults.ttlbAvg)}`);
       console.log(`  Min TTFB: ${formatTime(vercelResults.minTtfb)}`);
       console.log(`  Max TTFB: ${formatTime(vercelResults.maxTtfb)}`);
-      console.log(`  Mean TTFB: ${formatTime(vercelResults.meanTtfb)}`);
+      console.log(`  Avg TTFB: ${formatTime(vercelResults.avgTtfb)}`);
     }
 
     if (cfResults && vercelResults) {
       console.log("\n📈 Comparison:");
-      const ratio = cfResults.ttlbMean / vercelResults.ttlbMean;
+      const ratio = cfResults.ttlbAvg / vercelResults.ttlbAvg;
       if (ratio > 1) {
         console.log(
           `  Vercel is ${ratio.toFixed(
             2
-          )}x faster than Cloudflare (by mean) (TTLB)`
+          )}x faster than Cloudflare (by avg) (TTLB)`
         );
       } else {
         console.log(
           `  Cloudflare is ${(1 / ratio).toFixed(
             2
-          )}x faster than Vercel (by mean) (TTLB)`
+          )}x faster than Vercel (by avg) (TTLB)`
         );
       }
     }
@@ -284,11 +284,11 @@ async function main() {
     console.log();
 
     if (cf && vercel) {
-      const ratioTTLB = vercel.ttlbMean / cf.ttlbMean;
+      const ratioTTLB = vercel.ttlbAvg / cf.ttlbAvg;
       const winnerTTLB = ratioTTLB > 1 ? "Cloudflare" : "Vercel";
       const speedupTTLB = ratioTTLB > 1 ? ratioTTLB : 1 / ratioTTLB;
 
-      const ratioTTFB = vercel.meanTtfb / cf.meanTtfb;
+      const ratioTTFB = vercel.avgTtfb / cf.avgTtfb;
       const winnerTTFB = ratioTTFB > 1 ? "Cloudflare" : "Vercel";
       const speedupTTFB = ratioTTFB > 1 ? ratioTTFB : 1 / ratioTTFB;
 
@@ -298,26 +298,26 @@ async function main() {
       const vercelVariabilityTTFB = vercel.maxTtfb - vercel.minTtfb;
 
       console.log(
-        `| Platform   | TTLB Mean | TTLB Min | TTLB Max | TTLB Variability | TTFB Mean| TTFB Min | TTFB Max | TTFB Variability |`
+        `| Platform   | TTLB Avg  | TTLB Min | TTLB Max | TTLB Variability | TTFB Avg| TTFB Min | TTFB Max | TTFB Variability |`
       );
       console.log(
         `|------------|-----------|----------|----------|------------------|----------|----------|----------|------------------|`
       );
       console.log(
-        `| Cloudflare | ${formatTime(cf.ttlbMean)} | ${formatTime(
+        `| Cloudflare | ${formatTime(cf.ttlbAvg)} | ${formatTime(
           cf.ttlbMin
         )} | ${formatTime(cf.ttlbMax)} | ${formatTime(
           cfVariabilityTTLB
-        )} | ${formatTime(cf.meanTtfb)} | ${formatTime(
+        )} | ${formatTime(cf.avgTtfb)} | ${formatTime(
           cf.minTtfb
         )} | ${formatTime(cf.maxTtfb)} | ${formatTime(cfVariabilityTTFB)} |`
       );
       console.log(
-        `| Vercel     | ${formatTime(vercel.ttlbMean)} | ${formatTime(
+        `| Vercel     | ${formatTime(vercel.ttlbAvg)} | ${formatTime(
           vercel.ttlbMin
         )} | ${formatTime(vercel.ttlbMax)} | ${formatTime(
           vercelVariabilityTTLB
-        )} | ${formatTime(vercel.meanTtfb)} | ${formatTime(
+        )} | ${formatTime(vercel.avgTtfb)} | ${formatTime(
           vercel.minTtfb
         )} | ${formatTime(vercel.maxTtfb)} | ${formatTime(
           vercelVariabilityTTFB
