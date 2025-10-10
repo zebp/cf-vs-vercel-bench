@@ -364,6 +364,12 @@ async function main() {
       "utf8"
     );
     console.log(`📝 Results written to: ${filePath}`);
+
+    console.log("Uploading results to site...");
+    await fetch("https://benchmark-results.zeb.workers.dev/results", {
+      method: "POST",
+      body: JSON.stringify(summary),
+    });
   } catch (err) {
     console.error("Failed to write results file:", err.message);
   }
